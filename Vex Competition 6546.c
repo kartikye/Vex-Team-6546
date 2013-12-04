@@ -65,47 +65,7 @@ void pre_auton()
 //                                                                                           //
 ///////////////////////////////////////////////////////////////////////////////////////////////
 
-//Stop Motors
-
-void stopDriveMotors(){
-	motor[port10] = 0;
-	motor[port9]  = 0;
-	motor[port1]  = 0;
-	motor[port2]  = 0;
-}
-
-void stopArmMotors(){
-	motor[port3]  = 0;
-	motor[port4]  = 0;
-}
-
-void stopPickerUpper(){
-	motor[port5] = 0;
-}
-
 //Robot Movement
-
-void moveForward(int t, int speed){
-	motor[port10] = speed;
-	motor[port9]  = speed;
-	motor[port1]  = speed;
-	motor[port2]  = speed;
-
-	wait1Msec(t);
-
-	stopDriveMotors();
-}
-
-void moveBackward(int t, int speed){
-	motor[port10] = -1*speed;
-	motor[port9]  = -1*speed;
-	motor[port1]  = -1*speed;
-	motor[port2]  = -1*speed;
-
-	wait1Msec(t);
-
-	stopDriveMotors();
-}
 
 void moveRightMotors(int speed, int limit){
 	motor[port10] = speed*limit;
@@ -117,16 +77,46 @@ void moveLeftMotors(int speed, int limit){
 	motor[port2] = speed*limit;
 }
 
+void stopDriveMotors(){
+	moveLeftMotors(0,0);
+	moveRightMotors(0,0);
+}
+
+void moveForward(int t, int speed){
+	moveLeftMotors(speed,1);
+	moveRightMotors(speed,1);
+
+	wait1Msec(t);
+
+	stopDriveMotors();
+}
+
+void moveBackward(int t, int speed){
+	moveLeftMotors(-1*speed,1);
+	moveRightMotors(-1*speed,1);
+
+	wait1Msec(t);
+
+	stopDriveMotors();
+}
+
 //Arm Movement
 
+void setArmSpeed(int right, int left){
+	motor[port3] = left;
+	motor[port4] = right;
+}
+
+void stopArmMotors(){
+	setArmSpeed(0,0);
+}
+
 void moveArmDown(){
-	motor[port3] =  127;
-	motor[port4] = -127;
+	setArmSpeed(-127,127);
 }
 
 void moveArmUp(){
-	motor[port3] = -127;
-	motor[port4] =  127;
+	setArmSpeed(127,-127);
 }
 
 void moveArmToPosition(int p){
@@ -147,12 +137,20 @@ void moveArmToPosition(int p){
 
 //Picker Upper Movement
 
+void setPickerUpperSpeed(int speed){
+	motor[port5] = speed;
+}
+
+void stopPickerUpper(){
+	setPickerUpperSpeed(0);
+}
+
 void pickerUpperIn(){
-	motor[port5] = -127;
+	setPickerUpperSpeed(-127);
 }
 
 void pickerUpperOut(){
-	motor[port5] =  127;
+	setPickerUpperSpeed(127);
 }
 
 /////////////////////////////////////////////////////////////////////////////////////////////////
